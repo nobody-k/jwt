@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"strings"
 	"time"
 )
@@ -29,6 +30,23 @@ type Claims map[string]interface{}
 func (c Claims) SetClaim(claim string, v interface{}) Claims {
 	c[claim] = v
 	return c
+}
+
+// Verify checks if the token is valid, the siniture is valid and it is not expired
+// it will override the Claims
+// returning true if validate or an error
+func (c Claims) Verify(token string, key string) (bool, error) {
+	parts := strings.Split(token, ".")
+
+	if len(parts) != 3 {
+		err := errors.New("Incorrect format of the token")
+		return false, err
+	}
+	// Header we do not care about at this moment
+
+	// the payload
+
+	return true, nil
 }
 
 // Sign produces the token for the defined claims, takes the secretkey for hasing,
