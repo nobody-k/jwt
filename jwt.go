@@ -5,15 +5,21 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
+	"strings"
 	"time"
 )
+
+// Encode JWT specific base64url encoding with padding stripped
+func Encode(seg []byte) string {
+	return strings.TrimRight(base64.URLEncoding.EncodeToString(seg), "=")
+}
 
 // ComputeHmac256 creates a hash based on the provided secret
 func ComputeHmac256(message string, secret string) string {
 	key := []byte(secret)
 	h := hmac.New(sha256.New, key)
 	h.Write([]byte(message))
-	return base64.StdEncoding.EncodeToString(h.Sum(nil))
+	return Encode(h.Sum(nil))
 }
 
 // Claims is the structure of claims
@@ -34,7 +40,7 @@ func (c Claims) Sign(secretKey string, expiration int) string {
 	**************** the HEADER ********************
 	 */
 	// using fized header for now
-	header := base64.StdEncoding.EncodeToString([]byte(`{"alg":"HS256","typ":"JWT"}`))
+	header := Encode([]byte(`{"alg":"HS256","typ":"JWT"}`))
 	/*
 	**************** the CLAIMS ********************
 	 */
@@ -61,7 +67,8 @@ func (c Claims) Sign(secretKey string, expiration int) string {
 		panic(err)
 	}
 	// and encode the payload
-	payload := base64.StdEncoding.EncodeToString(j)
+	payload := Encode(j)
+
 	/*
 	**************** the Signature ********************
 	 */
