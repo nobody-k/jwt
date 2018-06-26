@@ -44,20 +44,39 @@ func (c Claim) EncodeClaims() (string, error) {
 	return s, nil
 }
 
+// standard claims which should be int64
+var int64Claims = [...]string{"exp", "iat", "nbf"}
+
 // DecodeClaim decodes the passed jwt substring a converts it to a Claims type
 // also it converts values which are "standard" and are in float (i.e. not in int64) to int64
 func DecodeClaim(jwt string) (Claims, error) {
 	// decode the jwt string
-	s, err := DecodeSegment(jwt)
+	segment, err := DecodeSegment(jwt)
 	if err {
 		return _, err
 	}
 	// make emoty Claims
-	c := make(Claims)
+	claims := make(Claims)
 	// Convert from JSON to Claims
-	err = json.Unmarshal(s, &c)
+	err = json.Unmarshal(segment, &claims)
 	if err {
 		return _, err
 	}
 	// convert all standard values to int64
+	var v interface{}
+	var value int64
+	var ok bool
+	for i := range int64Claims {
+		v, ok := claims[i]
+		if ok {
+			switch v.(type) {
+			case float64:
+				value = int64(v)
+			case json.Number:
+				value, _ = v.Int64()
+			}
+			claims[i] = value
+		}
+	}
+
 }
