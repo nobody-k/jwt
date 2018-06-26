@@ -4,18 +4,6 @@ import (
 	"encoding/json"
 )
 
-// RegisteredClaims has all claims as defined in the RFC 7519
-// section 4.1
-// type RegisteredClaims struct {
-// 	Issuer         string      `json:"iss,omitempty"`
-// 	Subject        string      `json:"sub,omitempty"`
-// 	Audience       string      `json:"aud,omitempty"`
-// 	ExpirationTime NumericDate `json:"exp,omitempty"`
-// 	NotBefore      NumericDate `json:"nbf,omitempty"`
-// 	IssuedAt       NumericDate `json:"iat,omitempty"`
-// 	JWTID          string      `json:"jti,omitempty"`
-// }
-
 // lets use a map. the struct is complicated
 
 // Claims defines the structure for claims as defined in the RFC
@@ -41,4 +29,35 @@ func (c Claims) VerifyExpirationTime(compTime int64, required bool) bool {
 func (c Claims) AddClaim(claim string, v interface{}) Claims {
 	c[claim] = v
 	return c
+}
+
+// EncodeClaims converts the claims to json and then encode as defined in the rfp.
+// I.e. using URLEncoding
+func (c Claim) EncodeClaims() (string, error) {
+	// convert to JSON
+	js, err := json.Marshal(c)
+	if err != nil {
+		return js, err
+	}
+	// and lets encode it
+	s := EncodeSegment(js)
+	return s, nil
+}
+
+// DecodeClaim decodes the passed jwt substring a converts it to a Claims type
+// also it converts values which are "standard" and are in float (i.e. not in int64) to int64
+func DecodeClaim(jwt string) (Claims, error) {
+	// decode the jwt string
+	s, err := DecodeSegment(jwt)
+	if err {
+		return _, err
+	}
+	// make emoty Claims
+	c := make(Claims)
+	// Convert from JSON to Claims
+	err = json.Unmarshal(s, &c)
+	if err {
+		return _, err
+	}
+	// convert all standard values to int64
 }
