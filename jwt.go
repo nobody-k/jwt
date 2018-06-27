@@ -11,25 +11,13 @@ import (
 	"time"
 )
 
-// Encode JWT specific base64url encoding with padding stripped
-func Encode(seg []byte) string {
-	return strings.TrimRight(base64.URLEncoding.EncodeToString(seg), " ")
-}
-
-func DecodeSegment(seg string) ([]byte, error) {
-	if l := len(seg) % 4; l > 0 {
-		seg += strings.Repeat("=", 4-l)
-	}
-
-	return base64.URLEncoding.DecodeString(seg)
-}
 
 // ComputeHmac256 creates a hash based on the provided secret
 func ComputeHmac256(message string, secret string) string {
 	key := []byte(secret)
 	h := hmac.New(sha256.New, key)
 	h.Write([]byte(message))
-	return Encode(h.Sum(nil))
+	return EncodeSegment(h.Sum(nil))
 }
 
 // Claims is the structure of claims
