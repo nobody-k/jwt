@@ -11,7 +11,6 @@ import (
 	"time"
 )
 
-
 // ComputeHmac256 creates a hash based on the provided secret
 func ComputeHmac256(message string, secret string) string {
 	key := []byte(secret)
@@ -20,19 +19,10 @@ func ComputeHmac256(message string, secret string) string {
 	return EncodeSegment(h.Sum(nil))
 }
 
-// Claims is the structure of claims
-type Claims map[string]interface{}
-
-// SetClaim sets a claim in appropriate field
-func (c Claims) SetClaim(claim string, v interface{}) Claims {
-	c[claim] = v
-	return c
-}
-
-// Verify checks if the token is valid, the siniture is valid and it is not expired
-// it will override the Claims
+// Verify checks if the token is valid, the signiture is valid and it is not expired
+// it will return the Claims
 // returning true if validate or an error
-func (c Claims) Verify(token string, secretKey string) (bool, error) {
+func Verify(token string, secretKey string) (bool, error) {
 	var err error
 
 	parts := strings.Split(token, ".")
@@ -77,6 +67,10 @@ func (c Claims) Verify(token string, secretKey string) (bool, error) {
 	}
 
 	return true, nil
+}
+
+func Sign(header Claims, payload Claims, secretKey string, expiration int) (string, error) {
+
 }
 
 // Sign produces the token for the defined claims, takes the secretkey for hasing,
