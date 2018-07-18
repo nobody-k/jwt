@@ -69,7 +69,26 @@ func Verify(token string, secretKey string) (bool, error) {
 	return true, nil
 }
 
-func Sign(header Claims, payload Claims, secretKey string, expiration int) (string, error) {
+// Sign produces the token for the defined claims, takes the secretkey for hasing,
+// and expiration in seconds for the exp Claim as defined in the RFC
+// if experation == 0 no exp Claim will be created
+// at this moment assuming only one method for hashing
+func Sign(payload Claims, secretKey string, expiration int) (string, error) {
+
+	// the Header
+	header := make(Claims)
+	header.AddClaim("alg", "HS256").AddClaim("typ", "JWT")
+
+	headerString, err := header.EncodeClaims()
+
+	// the payload
+	// set the time
+	currentTime := time.Now()
+	if expiration > 0 {
+		exp := currentTime.Add(time.Second * time.Duration(expiration)).Unix()
+		payload.AddClaim("exp", exp)
+	}
+	payloadString, err := payload.EncodeClaims()
 
 }
 
