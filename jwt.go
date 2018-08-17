@@ -22,7 +22,7 @@ func ComputeHmac256(message string, secret string) string {
 // Verify checks if the token is valid, the signiture is valid and it is not expired
 // it will return the Claims
 // returning true if validate or an error
-func Verify(token string, secretKey string) (bool, error) {
+func Verify(token string, secretKey string) (Claims, bool, error) {
 	var err error
 
 	parts := strings.Split(token, ".")
