@@ -22,8 +22,9 @@ func ComputeHmac256(message string, secret string) string {
 // Verify checks if the token is valid, the signiture is valid and it is not expired
 // it will return the Claims
 // returning true if validate or an error
-func Verify(token string, secretKey string) (Claims, bool, error) {
+func (c Claims) Verify(token string, secretKey string) (bool, error) {
 	var err error
+	err = nil
 
 	parts := strings.Split(token, ".")
 
@@ -55,7 +56,6 @@ func Verify(token string, secretKey string) (Claims, bool, error) {
 		return false, err
 	}
 
-	fmt.Println(c)
 	// get the time from the payload and get the currengt time
 	expirationTime := time.Unix(c["exp"].(int64), 0)
 	currentTime := time.Now()
