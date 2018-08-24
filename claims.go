@@ -9,6 +9,21 @@ import (
 // Claims defines the structure for claims as defined in the RFC
 type Claims map[string]interface{}
 
+// MergeClaims merges to claims into one
+func MergeClaims(c1 Claims, c2 Claims) Claims {
+	c := make(Claims)
+	var k string
+	var v interface{}
+	for k, v = range c1 {
+		c[k] = v
+	}
+	for k, v = range c2 {
+		c[k] = v
+	}
+
+	return c
+}
+
 // VerifyExpirationTime checks if the expiration time is after the given compTime
 // The parametr required is used if it is expexted to get exp from the claims
 // This functio is used after receiving the token from the client
@@ -67,7 +82,7 @@ func DecodeClaims(jwt string) (Claims, error) {
 		claimValue, ok = claims[v] // get the value and check if the claim exists
 		if ok {
 			value, _ = claimValue.(int64)
-			claims[v] = claimValue
+			claims[v] = value
 		}
 	}
 	return claims, nil

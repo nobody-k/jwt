@@ -3,10 +3,7 @@ package jwt
 import (
 	"crypto/hmac"
 	"crypto/sha256"
-	"encoding/base64"
-	"encoding/json"
 	"errors"
-	"fmt"
 	"strings"
 	"time"
 )
@@ -20,17 +17,20 @@ func ComputeHmac256(message string, secret string) string {
 }
 
 // Verify checks if the token is valid, the signiture is valid and it is not expired
-// it will return the Claims
+// returning claims, i.e. merged header and payload claims
 // returning true if validate or an error
-func (c Claims) Verify(token string, secretKey string) (bool, error) {
+func Verify(token string, secretKey string) (Claims, bool, error) {
 	var err error
 	err = nil
+	var header Claims
+	var payload Claims
+	var claims Claims
 
 	parts := strings.Split(token, ".")
 
 	if len(parts) != 3 {
 		err = errors.New("Incorrect format of the token")
-		return false, err
+		return claims, false, err
 	}
 
 	// compute the hash of the first two parts. Header and the payload
@@ -38,32 +38,33 @@ func (c Claims) Verify(token string, secretKey string) (bool, error) {
 	// lets compare it with the received one. parts[2]
 	if hash != parts[2] {
 		err = errors.New("Wrong signature")
-		return false, err
+		return claims, false, err
 	}
 
-	headerJSON, _ := base64.URLEncoding.DecodeString(parts[0])
-	payloadJSON, _ := base64.URLEncoding.DecodeString(parts[1])
-	fmt.Println(string(headerJSON), string(payloadJSON))
-
-	// decode header
-	header := make(Claims)
-	if err = json.Unmarshal(headerJSON, &header); err != nil {
-		return false, err
+	// header claims
+	header, err = DecodeClaims(parts[0])
+	if err != nil {
+		return claims, false, err
 	}
 
-	// decode payload
-	if err = json.Unmarshal(payloadJSON, &c); err != nil {
-		return false, err
+	// payload claims
+	payload, err = DecodeClaims(parts[1])
+	if err != nil {
+		return claims, false, err
 	}
+
+	// so far everything ok
+	// lets merge the two claims, header and payload into one
+	claims = MergeClaims(header, payload)
 
 	// get the time from the payload and get the currengt time
-	expirationTime := time.Unix(c["exp"].(int64), 0)
+	expirationTime := time.Unix(claims["exp"].(int64), 0)
 	currentTime := time.Now()
 
 	// expirationTime should be after the currentTime
 	if currentTime.After(expirationTime) {
 		err = errors.New("Expired JWT")
-		return false, err
+		return claims, false, err
 	}
 
 	return true, nil
