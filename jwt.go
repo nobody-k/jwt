@@ -57,17 +57,10 @@ func Verify(token string, secretKey string) (Claims, bool, error) {
 	// lets merge the two claims, header and payload into one
 	claims = MergeClaims(header, payload)
 
-	// get the time from the payload and get the currengt time
-	expirationTime := time.Unix(claims["exp"].(int64), 0)
-	currentTime := time.Now()
+	// get the currengt time
+	currentTime := time.Now().Unix()
 
-	// expirationTime should be after the currentTime
-	if currentTime.After(expirationTime) {
-		err = errors.New("Expired JWT")
-		return claims, false, err
-	}
-
-	return true, nil
+	return claims, claims.VerifyExpirationTime(currentTime), nil
 }
 
 // Sign produces the token for the defined claims, takes the secretkey for hasing,
@@ -109,5 +102,5 @@ func Sign(payload Claims, secretKey string, expiration int) (string, error) {
 
 	signature := ComputeHmac256(headerString+"."+payloadString, secretKey)
 
-	return headerString + "." + payloadString + ".", nil
+	return headerString + "." + payloadString + "."+signature, nil
 }

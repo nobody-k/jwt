@@ -25,13 +25,16 @@ func MergeClaims(c1 Claims, c2 Claims) Claims {
 }
 
 // VerifyExpirationTime checks if the expiration time is after the given compTime
-// The parametr required is used if it is expexted to get exp from the claims
 // This functio is used after receiving the token from the client
-func (c Claims) VerifyExpirationTime(compTime int64, required bool) bool {
+func (c Claims) VerifyExpirationTime(compTime int64) bool {
+	var value int64
+	value = 0
 	exp, ok := c["exp"] // I am assuming the DecodeClaims function was called before
-	value := exp.(int64)
+	if ok {
+		value = exp.(int64)
+	}
 
-	return (compTime <= value) || required
+	return compTime <= value
 }
 
 // AddClaim adds a claim to the given map c. The value of the claim is v
@@ -78,7 +81,7 @@ func DecodeClaims(jwt string) (Claims, error) {
 	var claimValue interface{}
 	var value int64
 	var ok bool
-	for i, v := range int64Claims {
+	for _, v := range int64Claims {
 		claimValue, ok = claims[v] // get the value and check if the claim exists
 		if ok {
 			value, _ = claimValue.(int64)
