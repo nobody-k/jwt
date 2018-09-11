@@ -8,11 +8,20 @@ import (
 )
 
 func TestSign(t *testing.T) {
+	c := jwt.Claims{"pay": 55}
+	key := "secretkey"
+	var expiration int64 = 10
+
+	jwt, err := jwt.Sign(c, key, expiration)
+
+	fmt.Println(jwt)
+	fmt.Println(err)
 
 }
 
+/*
 func TestVerify(t *testing.T) {
-	s := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1Mjk4ODY0NDksImlhdCI6MTUyOTg3NjQ0OSwibmFtZSI6ImpvaG4ifQ==.QUoLtHeoJHec2t8LpmWal4ZTdZg5FhUInQjz7PDXQtk="
+	s := "eyJhbGciOsiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1Mjk4ODY0NDksImlhdCI6MTUyOTg3NjQ0OSwibmFtZSI6ImpvaG4ifQ==.QUoLtHeoJHec2t8LpmWal4ZTdZg5FhUInQjz7PDXQtk="
 
 	t.Log(s)
 
@@ -21,4 +30,4 @@ func TestVerify(t *testing.T) {
 	fmt.Println(ok, err)
 	fmt.Println(c)
 
-}
+}*/
