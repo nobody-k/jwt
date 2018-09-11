@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 )
 
-// lets use a map. the struct is complicated
+// lets use a map. Seems to be more convenient.
 
 // Claims defines the structure for claims as defined in the RFC
 type Claims map[string]interface{}
@@ -25,7 +25,7 @@ func MergeClaims(c1 Claims, c2 Claims) Claims {
 }
 
 // VerifyExpirationTime checks if the expiration time is after the given compTime
-// This functio is used after receiving the token from the client
+// This function is used after receiving the token from the client
 func (c Claims) VerifyExpirationTime(compTime int64) bool {
 	var value int64
 	value = 0

@@ -65,9 +65,9 @@ func Verify(token string, secretKey string) (Claims, bool, error) {
 
 // Sign produces the token for the defined claims, takes the secretkey for hasing,
 // and expiration in seconds for the exp Claim as defined in the RFC
-// if experation == 0 no exp Claim will be created
+// if experation == 0, exp Claim will not be created
 // at this moment assuming only one method for hashing
-func Sign(payload Claims, secretKey string, expiration int) (string, error) {
+func Sign(payload Claims, secretKey string, expiration int64) (string, error) {
 
 	// the Header
 	header := make(Claims)

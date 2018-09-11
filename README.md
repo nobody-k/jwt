@@ -14,4 +14,11 @@ This simplified library consist of mainly Sign and Verify functions.
 
 Sign takes user defined claims, some secret key and expiratin in seconds).
 The function returns the JSON Web Token.
-The header of the JWT is populatated with 
+The header of the JWT is populatated with
+
+
+# TODO
+- Complete the testing
+- Complete the README.md file
+
+

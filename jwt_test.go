@@ -8,10 +8,7 @@ import (
 )
 
 func TestSign(t *testing.T) {
-	c := make(jwt.Claims)
-	//	c.SetClaim("name", "john")
-	//	token := c.Sign("secret", 10000)
-	//t.Log(token)
+
 }
 
 func TestVerify(t *testing.T) {
