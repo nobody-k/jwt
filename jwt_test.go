@@ -8,7 +8,7 @@ import (
 )
 
 func TestSign(t *testing.T) {
-	c := jwt.Claims{"pay": 55}
+	c := jwt.Claims{"pay": 51}
 	key := "secretkey"
 	var expiration int64 = 10
 

@@ -4,6 +4,7 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"errors"
+	"fmt"
 	"strings"
 	"time"
 )
@@ -100,7 +101,10 @@ func Sign(payload Claims, secretKey string, expiration int64) (string, error) {
 		return "", err
 	}
 
+	fmt.Println(header)
+	fmt.Println(payload)
+
 	signature := ComputeHmac256(headerString+"."+payloadString, secretKey)
 
-	return headerString + "." + payloadString + "."+signature, nil
+	return headerString + "." + payloadString + "." + signature, nil
 }
