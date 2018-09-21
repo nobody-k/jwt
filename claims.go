@@ -32,6 +32,8 @@ func (c Claims) VerifyExpirationTime(compTime int64) bool {
 	exp, ok := c["exp"] // I am assuming the DecodeClaims function was called before
 	if ok {
 		value = exp.(int64)
+	} else { // exp does not exists, just return it is ok
+		return true
 	}
 
 	return compTime <= value

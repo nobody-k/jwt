@@ -19,15 +19,10 @@ func TestSign(t *testing.T) {
 
 }
 
-/*
 func TestVerify(t *testing.T) {
-	s := "eyJhbGciOsiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1Mjk4ODY0NDksImlhdCI6MTUyOTg3NjQ0OSwibmFtZSI6ImpvaG4ifQ==.QUoLtHeoJHec2t8LpmWal4ZTdZg5FhUInQjz7PDXQtk="
-
-	t.Log(s)
-
-	c, ok, err := jwt.Verify(s, "secret")
-
+	s := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozjgNryP4J3jVmNHl0w5N_XgL0n3I9PlFUP0THsR8U"
+	c, ok, err := jwt.Verify(s, "your-256-bit-secret")
+	t.Log(ok)
 	fmt.Println(ok, err)
 	fmt.Println(c)
-
-}*/
+}
